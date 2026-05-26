@@ -123,7 +123,7 @@ def extract_text_from_image(image_path):
             return "OCR ERROR: No text detected"
 
         text = " ".join(result)
-        text = re.sub(r'[^A-Za-z0-9@₹.,:/_()\\- ]+', ' ', text)
+        text = re.sub(r'[^\w@₹.,:/()\-\s]+', ' ', text)
 
         return fix_ocr_text(text)
 
