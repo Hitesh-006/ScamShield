@@ -1,0 +1,12 @@
+streamlit
+pandas
+numpy
+scikit-learn
+easyocr
+pillow
+pillow-avif-plugin
+opencv-python
+requests
+torch
+torchvision
+
