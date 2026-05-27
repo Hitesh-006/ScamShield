@@ -134,15 +134,13 @@ st.markdown(
 st.markdown("## Search Previous Scam Logs")
 
 search_query = st.text_input(
-    "Search Scam News",
-    placeholder="Search latest scam news..."
+    "Search Scam Logs",
+    placeholder="Search previously analyzed job posts..."
 )
 
 if search_query:
-
     try:
         df = pd.read_csv("live_training_data.csv")
-
         results = df[
             df["text"].str.contains(
                 search_query,
@@ -150,18 +148,16 @@ if search_query:
                 na=False
             )
         ]
-
         if len(results) > 0:
-
             st.success(f"{len(results)} matching records found")
-
             st.dataframe(results)
-
         else:
-            st.warning("No matching records found")
+            st.warning("No matching records found in scan history")
 
-    except:
-        st.error("Could not load CSV database")
+    except FileNotFoundError:
+        st.info("No scan history yet — analyze a job post first to build the log.")
+    except Exception as e:
+        st.error(f"Could not load scan history: {e}")
 
 # =====================================================
 # SIDEBAR
@@ -332,13 +328,15 @@ if st.button("Analyze Job Post", use_container_width=True):
     # =================================================
     # WHY IT IS A SCAM
     # =================================================
+# =================================================
+# WHY IT IS A SCAM
+# =================================================
 
-        """
     st.markdown("## Why This Was Flagged")
 
     reasons = []
 
-    if result["ml_score"] > 50:          # lowered from 60
+    if result["ml_score"] > 50:
         reasons.append(
             f"ML model flagged {result['ml_score']}% scam probability"
         )
@@ -365,7 +363,6 @@ if st.button("Analyze Job Post", use_container_width=True):
                     f"Suspicious email detected: {e['email']}"
                 )
 
-    # NEW: structural reasons
     for sr in result.get("structural_reasons", []):
         reasons.append(sr)
 
@@ -381,7 +378,6 @@ if st.button("Analyze Job Post", use_container_width=True):
 
     for r in reasons:
         st.write("•", r)
-    """
 
     # =================================================
     # EMAIL ANALYSIS
