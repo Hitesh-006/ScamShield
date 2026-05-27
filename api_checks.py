@@ -1,17 +1,20 @@
 
 import re
 import requests
-
+import streamlit as st
 # =====================================================
 # API KEYS
 # =====================================================
 
 import os
 
-VIRUSTOTAL_API_KEY = os.getenv("VT_API")
-GOOGLE_SAFE_BROWSING_API_KEY = os.getenv("GSB_API")
-NEWS_API_KEY = os.getenv("NEWS_API")
-EMAILREP_API_KEY = os.getenv("EMAILREP_API")
+import streamlit as st
+VIRUSTOTAL_API_KEY = st.secrets["VIRUSTOTAL_API_KEY"]
+GOOGLE_SAFE_BROWSING_API_KEY = st.secrets["GOOGLE_SAFE_BROWSING_API_KEY"]
+NEWS_API_KEY = st.secrets["NEWS_API_KEY"]
+EMAILREP_API_KEY = st.secrets["EMAILREP_API_KEY"]
+
+
 
 # =====================================================
 # OCR CLEANER
@@ -732,4 +735,4 @@ def calculate_risk(
     # ===================================
 
     risk += phone_risk * 0.2
-
+    return risk

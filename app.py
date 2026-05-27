@@ -460,7 +460,7 @@ if st.button("Analyze Job Post", use_container_width=True):
 
             st.write(
                 "Heuristic Result:",
-                item["heuristic"]
+                item["reasons"]
             )
 
             st.markdown("</div>", unsafe_allow_html=True)
@@ -514,3 +514,4 @@ st.markdown("---")
 
 st.caption(
     "SCAMSHIELD | AI + OCR + Cybersecurity Scam Detection")
+st.write(result)
