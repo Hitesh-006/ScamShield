@@ -16,6 +16,8 @@ EMAILREP_API_KEY = st.secrets["EMAILREP_API_KEY"]
 
 
 
+
+
 # =====================================================
 # OCR CLEANER
 # =====================================================
@@ -695,44 +697,52 @@ def get_latest_scam_news():
 # =====================================================
 # FINAL RISK CALCULATION
 # =====================================================
-
 def calculate_risk(
     ml_probability,
     email_risk,
     url_risk,
     keyword_risk,
-    phone_risk
+    phone_risk,
+    structural_risk=0       # NEW — pass from backend.py
 ):
-
     risk = 0
 
     # ===================================
-    # ML MODEL
+    # ML MODEL — max 35 points
+    # (was 60 — too dominant)
+    # A 50% ML score gives 17.5 points
+    # A 90% ML score gives 31.5 points
     # ===================================
-
-    risk += ml_probability * 60
-
-    # ===================================
-    # EMAIL RISK
-    # ===================================
-
-    risk += email_risk * 0.2
+    risk += ml_probability * 35
 
     # ===================================
-    # URL RISK
+    # KEYWORD RISK — max 60 points (capped in backend)
+    # Direct, interpretable signal
     # ===================================
-
-    risk += url_risk
-
-    # ===================================
-    # KEYWORD RISK
-    # ===================================
-
     risk += keyword_risk
 
     # ===================================
-    # PHONE RISK
+    # STRUCTURAL RISK — max 40 points (capped in backend)
+    # No company name, too short, etc.
     # ===================================
+    risk += structural_risk
 
-    risk += phone_risk * 0.2
-    return risk
+    # ===================================
+    # EMAIL RISK — max contribution ~20
+    # email_risk is sum across all emails (0–100 each)
+    # Scale down so 1 risky email = ~15 points
+    # ===================================
+    risk += min(email_risk * 0.15, 20)
+
+    # ===================================
+    # URL RISK — keep as-is (already points-based)
+    # ===================================
+    risk += min(url_risk, 30)
+
+    # ===================================
+    # PHONE RISK — max contribution ~10
+    # phone_risk is sum across phones (0–100 each)
+    # ===================================
+    risk += min(phone_risk * 0.1, 10)
+
+    return min(risk, 100)

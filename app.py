@@ -333,39 +333,41 @@ if st.button("Analyze Job Post", use_container_width=True):
     # WHY IT IS A SCAM
     # =================================================
 
+        """
     st.markdown("## Why This Was Flagged")
 
     reasons = []
 
-    if result["ml_score"] > 60:
+    if result["ml_score"] > 50:          # lowered from 60
         reasons.append(
-            "High machine learning scam probability"
+            f"ML model flagged {result['ml_score']}% scam probability"
         )
 
     if result["keyword_risk"] > 0:
         reasons.append(
-            "Scam-related keywords detected"
+            f"Scam-related keywords detected (keyword risk: {result['keyword_risk']})"
         )
 
     if len(result["phones"]) > 0:
         reasons.append(
-            "Phone numbers detected"
+            "Phone numbers detected (suspicious recruiter contact)"
         )
 
     if len(result["urls"]) > 0:
         reasons.append(
-            "URLs detected"
+            "URLs detected and scanned"
         )
 
     if result["email_results"]:
-
         for e in result["email_results"]:
-
             if e["final_email_risk"] > 40:
-
                 reasons.append(
                     f"Suspicious email detected: {e['email']}"
                 )
+
+    # NEW: structural reasons
+    for sr in result.get("structural_reasons", []):
+        reasons.append(sr)
 
     if result["risk_score"] > 75:
         reasons.append(
@@ -379,6 +381,7 @@ if st.button("Analyze Job Post", use_container_width=True):
 
     for r in reasons:
         st.write("•", r)
+    """
 
     # =================================================
     # EMAIL ANALYSIS
@@ -514,4 +517,3 @@ st.markdown("---")
 
 st.caption(
     "SCAMSHIELD | AI + OCR + Cybersecurity Scam Detection")
-st.write(result)
