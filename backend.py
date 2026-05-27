@@ -207,6 +207,16 @@ SCAM_KEYWORD_RULES = [
     ("social security", 30, "SSN collection attempt"),
     ("bank account", 25, "Financial info harvesting"),
     ("bank details", 25, "Financial info harvesting"),
+    ("work remotely", 20, "Remote work scam signal"),
+    ("paid weekly", 25, "Vague weekly payment promise"),
+    ("five hundred dollars", 20, "Vague cash promise"),
+    ("carry out remotely", 20, "Remote task scam signal"),
+    ("contact professor", 15, "Impersonation signal"),
+    ("any department", 15, "Indiscriminate targeting signal"),
+    ("stating your full name", 25, "Personal data harvesting"),
+    ("full name", 15, "Personal data harvesting"),
+    ("year of study", 20, "Student targeting scam signal"),
+    ("further application requirements", 15, "Vague next steps signal"),
 ]
 
 def run_keyword_analysis(text):
@@ -272,6 +282,12 @@ def run_structural_checks(text):
         reasons.append("US residency requirement (reshipping scam pattern)")
 
     return min(risk, 40), reasons   # cap structural contribution at 40
+    # University/institution name but gmail sender = impersonation
+    university_signals = ["university", "college", "institute", "school", "dean", "professor"]
+    if any(s in text_lower for s in university_signals):
+        if re.search(r'@gmail\.com|@yahoo\.com|@hotmail\.com', text_lower):
+            risk += 40
+            reasons.append("Institutional name used but sender has free email (impersonation)")
 
 # =====================================================
 # MAIN ANALYSIS ENGINE

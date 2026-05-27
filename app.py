@@ -386,27 +386,16 @@ if st.button("Analyze Job Post", use_container_width=True):
     st.markdown("## Email Intelligence")
 
     if result["email_results"]:
-
         for e in result["email_results"]:
-
             st.markdown('<div class="box">', unsafe_allow_html=True)
-
             st.write("Email:", e["email"])
-
-            st.write(
-                "Risk Score:",
-                e["final_email_risk"]
-            )
-
-            st.write(
-                "API Reputation:",
-                e.get("api_result")
-            )
-
+            st.write("Risk Score:", e["final_email_risk"])
+            if e["reasons"]:
+                st.write("Reasons:", ", ".join(e["reasons"]))
+            else:
+                st.write("Reasons: Free email provider detected")
             st.markdown("</div>", unsafe_allow_html=True)
-
     else:
-
         st.success("No emails detected")
 
     # =================================================
